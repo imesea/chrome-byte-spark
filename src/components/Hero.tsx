@@ -2,7 +2,11 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 
-const Hero = () => {
+interface HeroProps {
+  onGetStarted?: () => void;
+}
+
+const Hero = ({ onGetStarted }: HeroProps) => {
   return (
     <section className="relative min-h-screen pt-20 pb-16 flex items-center">
       {/* Background grid pattern */}
@@ -28,7 +32,10 @@ const Hero = () => {
             </p>
             
             <div className="flex flex-wrap gap-4 pt-4">
-              <Button className="bg-qred hover:bg-qred-light text-white px-8 py-6 text-lg">
+              <Button 
+                className="bg-qred hover:bg-qred-light text-white px-8 py-6 text-lg"
+                onClick={onGetStarted}
+              >
                 Start free trial
               </Button>
               <Button variant="outline" className="border-silver/30 text-silver hover:text-white hover:border-silver px-8 py-6 text-lg">

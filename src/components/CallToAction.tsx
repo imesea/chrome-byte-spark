@@ -3,7 +3,11 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 
-const CallToAction = () => {
+interface CallToActionProps {
+  onStartTrial?: () => void;
+}
+
+const CallToAction = ({ onStartTrial }: CallToActionProps) => {
   return (
     <section className="py-20 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
@@ -34,7 +38,10 @@ const CallToAction = () => {
             </div>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button className="bg-qred hover:bg-qred-light text-white px-8 py-6 text-lg w-full sm:w-auto">
+              <Button 
+                className="bg-qred hover:bg-qred-light text-white px-8 py-6 text-lg w-full sm:w-auto" 
+                onClick={onStartTrial}
+              >
                 Start free trial
               </Button>
               <Button variant="ghost" className="text-silver hover:text-white px-6 py-6 text-lg w-full sm:w-auto">
