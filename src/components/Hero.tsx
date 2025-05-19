@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 
@@ -22,13 +21,13 @@ const Hero = ({ onGetStarted }: HeroProps) => {
             </div>
             
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter">
-              <span className="text-gradient">Next generation</span>
+              <span className="text-gradient">Free study tools</span>
               <br />
-              <span className="text-white">Question Bank</span>
+              <span className="text-white">for students</span>
             </h1>
             
             <p className="text-silver-light text-lg md:text-xl max-w-lg">
-              Advanced AI-powered platform that streamlines the creation, management, and analysis of educational assessments.
+              Access our AI-powered question bank platform to improve your grades and prepare for exams - completely free for all students.
             </p>
             
             <div className="flex flex-wrap gap-4 pt-4">
@@ -36,7 +35,7 @@ const Hero = ({ onGetStarted }: HeroProps) => {
                 className="bg-qred hover:bg-qred-light text-white px-8 py-6 text-lg"
                 onClick={onGetStarted}
               >
-                Start free trial
+                Get started now
               </Button>
               <Button variant="outline" className="border-silver/30 text-silver hover:text-white hover:border-silver px-8 py-6 text-lg">
                 Watch demo
@@ -50,12 +49,13 @@ const Hero = ({ onGetStarted }: HeroProps) => {
                 ))}
               </div>
               <p className="text-sm text-silver">
-                <span className="font-semibold text-white">500+</span> educators already using QBank
+                <span className="font-semibold text-white">500+</span> students already using QBank
               </p>
             </div>
           </div>
           
           <div className="flex-1 relative">
+            {/* Keep existing mock interface elements */}
             <div className="tech-frame rounded-lg border border-silver/20 overflow-hidden shadow-2xl relative h-[500px] w-full animate-float bg-black/40 backdrop-blur-sm">
               <div className="absolute top-0 left-0 w-full h-12 bg-black/60 flex items-center px-4">
                 <div className="flex space-x-2">
