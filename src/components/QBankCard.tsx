@@ -1,8 +1,7 @@
 
 import React from "react";
-import { Star } from "lucide-react";
+import { Star, Plus } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 interface QBankCardProps {
   qbank: {
@@ -17,22 +16,21 @@ interface QBankCardProps {
 
 const QBankCard = ({ qbank }: QBankCardProps) => {
   return (
-    <Card className="tech-frame bg-black/40 border border-silver/20 hover:border-qred/30 transition-colors overflow-hidden hover-glow">
+    <Card className="tech-frame bg-black/40 border border-silver/20 hover:border-qred/30 transition-colors overflow-hidden hover-glow relative">
+      <div className="absolute top-2 right-2 z-10">
+        <button 
+          className="bg-qred hover:bg-qred-light text-white rounded-full w-8 h-8 flex items-center justify-center transition-transform hover:scale-110"
+          aria-label="Subscribe to this QBank"
+        >
+          <Plus className="h-4 w-4" />
+        </button>
+      </div>
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
           <div>
             <h3 className="font-semibold text-lg text-white line-clamp-2">{qbank.title}</h3>
             <p className="text-silver text-sm">{qbank.topic}</p>
           </div>
-          <Badge 
-            variant="outline" 
-            className={`
-              border-silver/20 
-              ${qbank.difficulty === 'Advanced' ? 'text-qred' : 'text-silver-light'}
-            `}
-          >
-            {qbank.difficulty}
-          </Badge>
         </div>
       </CardHeader>
       

@@ -1,9 +1,10 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import QBankCard from "@/components/QBankCard";
 import FilterSidebar from "@/components/FilterSidebar";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const mockQBanks = [
   { 
@@ -57,6 +58,12 @@ const mockQBanks = [
 ];
 
 const Browse = () => {
+  const [filterVisible, setFilterVisible] = useState(true);
+
+  const toggleFilter = () => {
+    setFilterVisible(!filterVisible);
+  };
+
   return (
     <div className="flex flex-col space-y-6">
       <div className="flex justify-between items-center">
@@ -66,9 +73,7 @@ const Browse = () => {
         </Button>
       </div>
       
-      <div className="flex flex-col md:flex-row gap-6">
-        <FilterSidebar />
-        
+      <div className="flex flex-col md:flex-row gap-6 relative">
         <div className="flex-1">
           <Tabs defaultValue="recommended">
             <div className="mb-6">
@@ -109,6 +114,21 @@ const Browse = () => {
               </div>
             </TabsContent>
           </Tabs>
+        </div>
+        
+        <div className={`md:w-80 transition-all duration-300 ${filterVisible ? 'md:opacity-100' : 'md:w-12 md:opacity-80'}`}>
+          <div className="hidden md:flex justify-start mb-4">
+            <Button
+              variant="outline"
+              className="border-silver/20 text-silver h-8 w-8 p-0"
+              onClick={toggleFilter}
+            >
+              {filterVisible ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            </Button>
+          </div>
+          <div className={filterVisible ? 'block' : 'hidden md:block md:invisible'}>
+            <FilterSidebar />
+          </div>
         </div>
       </div>
     </div>
