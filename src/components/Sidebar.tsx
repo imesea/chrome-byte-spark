@@ -30,7 +30,7 @@ const Sidebar = () => {
     <div 
       className={cn(
         "tech-frame border-r border-silver/10 bg-black/40 h-[calc(100vh-4rem)] sticky top-16 flex flex-col transition-all duration-300",
-        collapsed ? "w-16" : "w-64"
+        collapsed ? "w-14" : "w-56"
       )}
     >
       <div className="flex-1 py-4">

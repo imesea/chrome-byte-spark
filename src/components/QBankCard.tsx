@@ -17,7 +17,7 @@ interface QBankCardProps {
 const QBankCard = ({ qbank }: QBankCardProps) => {
   return (
     <Card className="tech-frame bg-black/40 border border-silver/20 hover:border-qred/30 transition-colors overflow-hidden hover-glow relative">
-      <div className="absolute top-2 right-2 z-10">
+      <div className="absolute -top-1 -right-1 z-10">
         <button 
           className="bg-qred hover:bg-qred-light text-white rounded-full w-8 h-8 flex items-center justify-center transition-transform hover:scale-110"
           aria-label="Subscribe to this QBank"

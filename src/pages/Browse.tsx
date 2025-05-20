@@ -116,8 +116,8 @@ const Browse = () => {
           </Tabs>
         </div>
         
-        <div className={`md:w-80 transition-all duration-300 ${filterVisible ? 'md:opacity-100' : 'md:w-12 md:opacity-80'}`}>
-          <div className="hidden md:flex justify-start mb-4">
+        <div className={`fixed right-0 top-[4rem] bottom-0 z-30 transition-all duration-300 ${filterVisible ? 'md:w-80 px-4' : 'md:w-12'}`}>
+          <div className="hidden md:flex justify-start mb-4 pt-4">
             <Button
               variant="outline"
               className="border-silver/20 text-silver h-8 w-8 p-0"
