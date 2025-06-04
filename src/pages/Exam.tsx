@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,7 +12,6 @@ import {
   FileText,
   Maximize,
   Pause,
-  SkipForward,
   X,
   CheckCircle,
   XCircle,
@@ -142,29 +140,35 @@ const Exam = () => {
   const selectedAnswer = selectedAnswers[currentQuestion];
   const isCorrect = selectedAnswer === currentQuestionData.correctAnswer;
 
+  const getQuestionStatus = (index: number) => {
+    if (submittedQuestions.has(index)) {
+      const answer = selectedAnswers[index];
+      return answer === mockQuestions[index].correctAnswer ? 'correct' : 'incorrect';
+    }
+    if (selectedAnswers[index] !== undefined) return 'answered';
+    return 'unanswered';
+  };
+
   return (
     <div className="h-screen bg-gradient-to-b from-[#111111] to-[#1a1a1a] text-white overflow-hidden flex flex-col">
-      {/* Header */}
-      <div className="border-b border-silver/10 bg-black/40 px-6 py-4 flex-shrink-0">
+      {/* Streamlined Header */}
+      <div className="border-b border-silver/10 bg-black/40 px-6 py-3 flex-shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-6">
-            <h1 className="text-xl font-semibold text-white">USMLE Step 1 - Tutor Mode</h1>
-            <div className="flex items-center space-x-2 text-silver">
-              <BookOpen className="h-4 w-4" />
-              <span>Question {currentQuestion + 1} of {mockQuestions.length}</span>
-            </div>
-            <div className="flex items-center space-x-2 text-silver">
-              <span className="text-sm">Answered: {answeredCount}/{mockQuestions.length}</span>
-            </div>
-            <div className="flex items-center space-x-2 text-silver">
-              <span className="text-sm">Submitted: {submittedCount}/{mockQuestions.length}</span>
+            <h1 className="text-lg font-semibold text-white">USMLE Step 1</h1>
+            <div className="flex items-center space-x-4 text-silver text-sm">
+              <div className="flex items-center space-x-1">
+                <BookOpen className="h-3 w-3" />
+                <span>{currentQuestion + 1} of {mockQuestions.length}</span>
+              </div>
+              <span>Tutor Mode</span>
             </div>
           </div>
           
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2 text-silver">
               <Clock className="h-4 w-4" />
-              <span className={`font-mono text-lg ${timeRemaining < 600 ? 'text-qred' : ''}`}>
+              <span className={`font-mono ${timeRemaining < 600 ? 'text-qred' : ''}`}>
                 {formatTime(timeRemaining)}
               </span>
             </div>
@@ -173,81 +177,96 @@ const Exam = () => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="border-silver/20 text-silver hover:bg-silver/10"
+                className="border-silver/20 text-silver hover:bg-silver/10 h-8 px-3 text-xs"
                 onClick={() => setIsPaused(!isPaused)}
               >
-                <Pause className="h-4 w-4 mr-2" />
+                <Pause className="h-3 w-3 mr-1" />
                 {isPaused ? 'Resume' : 'Pause'}
               </Button>
-              <Button variant="outline" size="sm" className="border-silver/20 text-silver hover:bg-silver/10">
-                <Calculator className="h-4 w-4 mr-2" />
+              <Button variant="outline" size="sm" className="border-silver/20 text-silver hover:bg-silver/10 h-8 px-3 text-xs">
+                <Calculator className="h-3 w-3 mr-1" />
                 Calculator
               </Button>
-              <Button variant="outline" size="sm" className="border-silver/20 text-silver hover:bg-silver/10">
-                <FileText className="h-4 w-4 mr-2" />
+              <Button variant="outline" size="sm" className="border-silver/20 text-silver hover:bg-silver/10 h-8 px-3 text-xs">
+                <FileText className="h-3 w-3 mr-1" />
                 Lab Values
               </Button>
-              <Button variant="outline" size="sm" className="border-silver/20 text-silver hover:bg-silver/10">
-                <Maximize className="h-4 w-4 mr-2" />
-                Full Screen
+              <Button variant="outline" size="sm" className="border-silver/20 text-silver hover:bg-silver/10 h-8 px-3 text-xs">
+                <Maximize className="h-3 w-3 mr-1" />
+                Fullscreen
               </Button>
-              <Button variant="outline" size="sm" className="border-qred text-qred hover:bg-qred/10">
-                <X className="h-4 w-4 mr-2" />
-                End Exam
+              <Button variant="outline" size="sm" className="border-qred text-qred hover:bg-qred/10 h-8 px-3 text-xs">
+                <X className="h-3 w-3 mr-1" />
+                End
               </Button>
             </div>
           </div>
         </div>
         
-        <div className="mt-4 flex items-center space-x-4">
-          <Progress value={progress} className="h-2 flex-1" />
-          <span className="text-sm text-silver min-w-fit">{Math.round(progress)}% complete</span>
+        <div className="mt-3 flex items-center space-x-3">
+          <Progress value={progress} className="h-1.5 flex-1" />
+          <span className="text-xs text-silver min-w-fit">{Math.round(progress)}%</span>
         </div>
       </div>
 
       <div className="flex flex-1 overflow-hidden">
         {/* Question Navigation Sidebar */}
-        <div className="w-20 border-r border-silver/10 bg-black/40 p-3 overflow-y-auto flex-shrink-0">
-          <div className="space-y-2">
-            {mockQuestions.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentQuestion(index)}
-                className={`w-14 h-14 rounded-lg flex items-center justify-center text-sm font-medium transition-all duration-200 relative ${
-                  index === currentQuestion 
-                    ? "bg-qred text-white shadow-lg" 
-                    : submittedQuestions.has(index)
-                    ? "bg-green-600 text-white hover:bg-green-700"
-                    : selectedAnswers[index] !== undefined
-                    ? "bg-yellow-600 text-white hover:bg-yellow-700"
-                    : "bg-silver/20 text-silver hover:bg-silver/30"
-                }`}
-              >
-                {index + 1}
-                {flaggedQuestions.has(index) && (
-                  <Flag className="h-3 w-3 absolute -top-1 -right-1 text-yellow-400 fill-yellow-400" />
-                )}
-              </button>
-            ))}
+        <div className="w-16 border-r border-silver/10 bg-black/40 p-2 overflow-y-auto flex-shrink-0">
+          <div className="space-y-1.5">
+            {mockQuestions.map((_, index) => {
+              const status = getQuestionStatus(index);
+              let buttonClass = "w-12 h-12 rounded-lg flex items-center justify-center text-xs font-medium transition-all duration-200 relative ";
+              
+              if (index === currentQuestion) {
+                buttonClass += "bg-qred text-white shadow-lg ring-2 ring-qred/50";
+              } else {
+                switch (status) {
+                  case 'correct':
+                    buttonClass += "bg-green-600 text-white hover:bg-green-700";
+                    break;
+                  case 'incorrect':
+                    buttonClass += "bg-red-600 text-white hover:bg-red-700";
+                    break;
+                  case 'answered':
+                    buttonClass += "bg-blue-500 text-white hover:bg-blue-600";
+                    break;
+                  default:
+                    buttonClass += "bg-silver/20 text-silver hover:bg-silver/30";
+                }
+              }
+
+              return (
+                <button
+                  key={index}
+                  onClick={() => setCurrentQuestion(index)}
+                  className={buttonClass}
+                >
+                  {index + 1}
+                  {flaggedQuestions.has(index) && (
+                    <Flag className="h-2.5 w-2.5 absolute -top-0.5 -right-0.5 text-yellow-400 fill-yellow-400" />
+                  )}
+                </button>
+              );
+            })}
           </div>
           
-          {/* Legend */}
-          <div className="mt-6 space-y-2 text-xs text-silver">
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 rounded bg-green-600"></div>
-              <span>Submitted</span>
+          {/* Compact Legend */}
+          <div className="mt-4 space-y-1.5 text-xs text-silver">
+            <div className="flex items-center space-x-1.5">
+              <div className="w-2 h-2 rounded bg-green-600"></div>
+              <span>Correct</span>
             </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 rounded bg-yellow-600"></div>
+            <div className="flex items-center space-x-1.5">
+              <div className="w-2 h-2 rounded bg-red-600"></div>
+              <span>Wrong</span>
+            </div>
+            <div className="flex items-center space-x-1.5">
+              <div className="w-2 h-2 rounded bg-blue-500"></div>
               <span>Answered</span>
             </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 rounded bg-qred"></div>
-              <span>Current</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 rounded bg-silver/20"></div>
-              <span>Unanswered</span>
+            <div className="flex items-center space-x-1.5">
+              <div className="w-2 h-2 rounded bg-silver/20"></div>
+              <span>Unseen</span>
             </div>
           </div>
         </div>
@@ -256,13 +275,13 @@ const Exam = () => {
         <div className="flex-1 flex flex-col overflow-hidden">
           <div className="flex-1 flex overflow-hidden">
             {/* Question Panel - Left Half */}
-            <div className="flex-1 p-6 overflow-y-auto">
+            <div className="flex-1 p-4 overflow-y-auto">
               <Card className="shadow-xl h-full">
-                <CardContent className="p-8 bg-white text-black h-full flex flex-col">
-                  <div className="flex items-start justify-between mb-6">
-                    <div className="flex items-center space-x-4">
-                      <h2 className="text-2xl font-bold text-black">Question {currentQuestion + 1}</h2>
-                      <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                <CardContent className="p-6 bg-white text-black h-full flex flex-col">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <h2 className="text-xl font-bold text-black">Question {currentQuestion + 1}</h2>
+                      <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
                         Tutor Mode
                       </span>
                     </div>
@@ -274,22 +293,22 @@ const Exam = () => {
                         flaggedQuestions.has(currentQuestion)
                           ? "bg-yellow-400 text-black border-yellow-400 hover:bg-yellow-500"
                           : "border-gray-300 text-gray-600 hover:bg-gray-50"
-                      }`}
+                      } h-8 px-3 text-xs`}
                     >
-                      <Flag className="h-4 w-4 mr-2" />
+                      <Flag className="h-3 w-3 mr-1" />
                       {flaggedQuestions.has(currentQuestion) ? 'Flagged' : 'Flag'}
                     </Button>
                   </div>
                   
-                  <div className="prose prose-lg max-w-none text-black mb-8 flex-1">
-                    <p className="leading-relaxed text-lg">
+                  <div className="prose prose-lg max-w-none text-black mb-6 flex-1">
+                    <p className="leading-relaxed">
                       {currentQuestionData.text}
                     </p>
                   </div>
 
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {currentQuestionData.options.map((option, index) => {
-                      let buttonClass = "w-full text-left p-5 rounded-xl border-2 transition-all duration-200";
+                      let buttonClass = "w-full text-left p-4 rounded-lg border-2 transition-all duration-200";
                       
                       if (isCurrentQuestionSubmitted) {
                         if (index === currentQuestionData.correctAnswer) {
@@ -314,8 +333,8 @@ const Exam = () => {
                           disabled={isCurrentQuestionSubmitted}
                           className={buttonClass}
                         >
-                          <div className="flex items-start space-x-4">
-                            <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-bold ${
+                          <div className="flex items-start space-x-3">
+                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold ${
                               isCurrentQuestionSubmitted 
                                 ? index === currentQuestionData.correctAnswer
                                   ? "border-green-500 bg-green-500 text-white"
@@ -328,12 +347,12 @@ const Exam = () => {
                             }`}>
                               {String.fromCharCode(65 + index)}
                             </div>
-                            <span className="flex-1 text-lg leading-relaxed">{option}</span>
+                            <span className="flex-1 leading-relaxed">{option}</span>
                             {isCurrentQuestionSubmitted && index === currentQuestionData.correctAnswer && (
-                              <CheckCircle className="h-6 w-6 text-green-500" />
+                              <CheckCircle className="h-5 w-5 text-green-500" />
                             )}
                             {isCurrentQuestionSubmitted && index === selectedAnswer && index !== currentQuestionData.correctAnswer && (
-                              <XCircle className="h-6 w-6 text-red-500" />
+                              <XCircle className="h-5 w-5 text-red-500" />
                             )}
                           </div>
                         </button>
@@ -346,8 +365,7 @@ const Exam = () => {
                       <Button
                         onClick={handleSubmitQuestion}
                         disabled={selectedAnswer === undefined}
-                        className="bg-qred hover:bg-qred/90 text-white px-8 py-3"
-                        size="lg"
+                        className="bg-qred hover:bg-qred/90 text-white px-6 py-2"
                       >
                         Submit Answer
                       </Button>
@@ -359,26 +377,26 @@ const Exam = () => {
 
             {/* Explanation Panel - Right Half */}
             {isCurrentQuestionSubmitted && (
-              <div className="flex-1 p-6 overflow-y-auto border-l border-silver/10">
-                <div className="space-y-6">
+              <div className="flex-1 p-4 overflow-y-auto border-l border-silver/10">
+                <div className="space-y-4">
                   {/* Result Banner */}
                   <Card className={`${isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
-                    <CardContent className="p-6">
+                    <CardContent className="p-4">
                       <div className="flex items-center space-x-3">
                         {isCorrect ? (
-                          <CheckCircle className="h-8 w-8 text-green-600" />
+                          <CheckCircle className="h-6 w-6 text-green-600" />
                         ) : (
-                          <XCircle className="h-8 w-8 text-red-600" />
+                          <XCircle className="h-6 w-6 text-red-600" />
                         )}
                         <div>
-                          <h3 className={`text-xl font-bold ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+                          <h3 className={`text-lg font-bold ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
                             {isCorrect ? 'Correct!' : 'Incorrect'}
                           </h3>
-                          <p className={`${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
+                          <p className={`text-sm ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
                             You selected: {currentQuestionData.options[selectedAnswer]}
                           </p>
                           {!isCorrect && (
-                            <p className="text-green-600">
+                            <p className="text-sm text-green-600">
                               Correct answer: {currentQuestionData.options[currentQuestionData.correctAnswer]}
                             </p>
                           )}
@@ -389,12 +407,12 @@ const Exam = () => {
 
                   {/* Explanation */}
                   <Card className="bg-white">
-                    <CardContent className="p-6">
-                      <div className="flex items-center space-x-2 mb-4">
-                        <Lightbulb className="h-5 w-5 text-yellow-500" />
-                        <h4 className="text-lg font-semibold text-black">Explanation</h4>
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <Lightbulb className="h-4 w-4 text-yellow-500" />
+                        <h4 className="font-semibold text-black">Explanation</h4>
                       </div>
-                      <p className="text-gray-700 leading-relaxed mb-4">
+                      <p className="text-gray-700 text-sm leading-relaxed">
                         {currentQuestionData.explanation.correct}
                       </p>
                     </CardContent>
@@ -402,18 +420,18 @@ const Exam = () => {
 
                   {/* Why Other Options Are Wrong */}
                   <Card className="bg-white">
-                    <CardContent className="p-6">
-                      <div className="flex items-center space-x-2 mb-4">
-                        <Target className="h-5 w-5 text-red-500" />
-                        <h4 className="text-lg font-semibold text-black">Why Other Options Are Incorrect</h4>
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <Target className="h-4 w-4 text-red-500" />
+                        <h4 className="font-semibold text-black">Why Other Options Are Incorrect</h4>
                       </div>
-                      <div className="space-y-3">
+                      <div className="space-y-2">
                         {Object.entries(currentQuestionData.explanation.why_others_wrong).map(([index, explanation]) => (
-                          <div key={index} className="border-l-4 border-red-200 pl-4">
-                            <p className="font-medium text-gray-800">
+                          <div key={index} className="border-l-4 border-red-200 pl-3">
+                            <p className="font-medium text-gray-800 text-sm">
                               {String.fromCharCode(65 + parseInt(index))}. {currentQuestionData.options[parseInt(index)]}
                             </p>
-                            <p className="text-gray-600 text-sm mt-1">{explanation}</p>
+                            <p className="text-gray-600 text-xs mt-1">{explanation}</p>
                           </div>
                         ))}
                       </div>
@@ -422,12 +440,12 @@ const Exam = () => {
 
                   {/* Key Learning Point */}
                   <Card className="bg-blue-50 border-blue-200">
-                    <CardContent className="p-6">
-                      <div className="flex items-center space-x-2 mb-4">
-                        <TrendingUp className="h-5 w-5 text-blue-500" />
-                        <h4 className="text-lg font-semibold text-blue-800">Key Learning Point</h4>
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <TrendingUp className="h-4 w-4 text-blue-500" />
+                        <h4 className="font-semibold text-blue-800">Key Learning Point</h4>
                       </div>
-                      <p className="text-blue-700 leading-relaxed">
+                      <p className="text-blue-700 text-sm leading-relaxed">
                         {currentQuestionData.explanation.key_learning}
                       </p>
                     </CardContent>
@@ -437,55 +455,42 @@ const Exam = () => {
             )}
           </div>
 
-          {/* Bottom Panel */}
-          <div className="border-t border-silver/10 bg-black/40 p-4 flex-shrink-0">
+          {/* Streamlined Bottom Panel */}
+          <div className="border-t border-silver/10 bg-black/40 p-3 flex-shrink-0">
             <div className="flex items-center justify-between">
               {/* Navigation Controls */}
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-3">
                 <Button
                   variant="outline"
                   onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
                   disabled={currentQuestion === 0}
-                  className="border-silver/20 text-silver hover:bg-silver/10 disabled:opacity-50"
-                  size="lg"
+                  className="border-silver/20 text-silver hover:bg-silver/10 disabled:opacity-50 h-9 px-4 text-sm"
                 >
-                  <ChevronLeft className="h-5 w-5 mr-2" />
+                  <ChevronLeft className="h-4 w-4 mr-1" />
                   Previous
                 </Button>
 
                 <Button
                   onClick={() => setCurrentQuestion(Math.min(mockQuestions.length - 1, currentQuestion + 1))}
                   disabled={currentQuestion === mockQuestions.length - 1}
-                  className="bg-qred hover:bg-qred/90 text-white disabled:opacity-50"
-                  size="lg"
+                  className="bg-qred hover:bg-qred/90 text-white disabled:opacity-50 h-9 px-4 text-sm"
                 >
                   Next
-                  <ChevronRight className="h-5 w-5 ml-2" />
+                  <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               </div>
 
-              {/* Stats */}
-              <div className="flex items-center space-x-6 text-silver text-sm">
-                <span>Questions Completed: {submittedCount}/{mockQuestions.length}</span>
-                <span>Accuracy: {submittedCount > 0 ? Math.round((submittedCount / mockQuestions.length) * 100) : 0}%</span>
-                <span>Time per Question: {submittedCount > 0 ? Math.round((7200 - timeRemaining) / submittedCount) : 0}s avg</span>
+              {/* Compact Stats */}
+              <div className="flex items-center space-x-4 text-silver text-xs">
+                <span>Completed: {submittedCount}/{mockQuestions.length}</span>
+                <span>Avg Time: {submittedCount > 0 ? Math.round((7200 - timeRemaining) / submittedCount) : 0}s</span>
               </div>
 
               {/* Action Buttons */}
               <div className="flex items-center space-x-2">
-                <Button 
-                  variant="outline" 
-                  className="border-silver/20 text-silver hover:bg-silver/10"
-                  size="sm"
-                >
-                  <SkipForward className="h-4 w-4 mr-2" />
-                  Mark & Next
-                </Button>
-                
                 {currentQuestion === mockQuestions.length - 1 ? (
                   <Button
-                    className="bg-green-600 hover:bg-green-700 text-white"
-                    size="lg"
+                    className="bg-green-600 hover:bg-green-700 text-white h-9 px-4 text-sm"
                   >
                     Finish Session
                   </Button>
