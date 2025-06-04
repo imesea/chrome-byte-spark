@@ -25,6 +25,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/exam" element={<Exam />} />
           <Route element={<AppLayout />}>
             <Route path="/browse" element={<Browse />} />
             <Route path="/dashboard" element={<Dashboard />} />
@@ -32,7 +33,6 @@ const App = () => (
             <Route path="/settings" element={<Settings />} />
             <Route path="/my-qbanks" element={<MyQbanks />} />
             <Route path="/create-qbank" element={<CreateQBank />} />
-            <Route path="/exam" element={<Exam />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

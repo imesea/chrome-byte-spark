@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -13,7 +13,8 @@ import {
   FileText,
   Maximize,
   Pause,
-  SkipForward
+  SkipForward,
+  X
 } from "lucide-react";
 
 const mockQuestions = [
@@ -49,6 +50,28 @@ const mockQuestions = [
       "Preeclampsia with HELLP syndrome"
     ],
     correctAnswer: 1
+  },
+  {
+    id: 4,
+    text: "A 45-year-old male presents with chest pain that started 2 hours ago. The pain is substernal, crushing in nature, and radiates to his left arm. He appears diaphoretic and nauseous. His past medical history includes diabetes mellitus type 2 and hyperlipidemia. Vital signs: BP 140/90, HR 102, RR 18, O2 sat 97% on room air. ECG shows ST-segment elevation in leads II, III, and aVF. What is the most likely diagnosis?",
+    options: [
+      "Anterior STEMI",
+      "Inferior STEMI",
+      "Unstable angina",
+      "Aortic dissection"
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 5,
+    text: "A 67-year-old woman with a history of atrial fibrillation presents with sudden onset of severe abdominal pain, nausea, and vomiting. Physical examination reveals a distended abdomen with minimal bowel sounds. CT scan shows dilated small bowel loops with a transition point in the mid-small bowel. What is the most likely cause of her symptoms?",
+    options: [
+      "Adhesive small bowel obstruction",
+      "Mesenteric ischemia",
+      "Incarcerated hernia",
+      "Inflammatory bowel disease"
+    ],
+    correctAnswer: 1
   }
 ];
 
@@ -57,6 +80,16 @@ const Exam = () => {
   const [selectedAnswers, setSelectedAnswers] = useState<{[key: number]: number}>({});
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<number>>(new Set());
   const [timeRemaining, setTimeRemaining] = useState(7200); // 2 hours in seconds
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (!isPaused && timeRemaining > 0) {
+      const timer = setInterval(() => {
+        setTimeRemaining(prev => prev - 1);
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [isPaused, timeRemaining]);
 
   const handleAnswerSelect = (optionIndex: number) => {
     setSelectedAnswers(prev => ({
@@ -85,61 +118,81 @@ const Exam = () => {
   };
 
   const progress = ((currentQuestion + 1) / mockQuestions.length) * 100;
+  const answeredCount = Object.keys(selectedAnswers).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#111111] to-[#1a1a1a] text-white">
+    <div className="h-screen bg-gradient-to-b from-[#111111] to-[#1a1a1a] text-white overflow-hidden">
       {/* Header */}
       <div className="border-b border-silver/10 bg-black/40 px-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <h1 className="text-xl font-semibold text-white">USMLE Step 1 Practice</h1>
+          <div className="flex items-center space-x-6">
+            <h1 className="text-xl font-semibold text-white">USMLE Step 1 Practice Exam</h1>
             <div className="flex items-center space-x-2 text-silver">
               <BookOpen className="h-4 w-4" />
               <span>Question {currentQuestion + 1} of {mockQuestions.length}</span>
+            </div>
+            <div className="flex items-center space-x-2 text-silver">
+              <span className="text-sm">Answered: {answeredCount}/{mockQuestions.length}</span>
             </div>
           </div>
           
           <div className="flex items-center space-x-6">
             <div className="flex items-center space-x-2 text-silver">
               <Clock className="h-4 w-4" />
-              <span className="font-mono">{formatTime(timeRemaining)}</span>
+              <span className={`font-mono text-lg ${timeRemaining < 600 ? 'text-qred' : ''}`}>
+                {formatTime(timeRemaining)}
+              </span>
             </div>
             
             <div className="flex items-center space-x-2">
-              <Button variant="outline" size="sm" className="border-silver/20 text-silver">
-                <Maximize className="h-4 w-4 mr-2" />
-                Full Screen
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-silver/20 text-silver hover:bg-silver/10"
+                onClick={() => setIsPaused(!isPaused)}
+              >
+                <Pause className="h-4 w-4 mr-2" />
+                {isPaused ? 'Resume' : 'Pause'}
               </Button>
-              <Button variant="outline" size="sm" className="border-silver/20 text-silver">
+              <Button variant="outline" size="sm" className="border-silver/20 text-silver hover:bg-silver/10">
                 <Calculator className="h-4 w-4 mr-2" />
                 Calculator
               </Button>
-              <Button variant="outline" size="sm" className="border-silver/20 text-silver">
+              <Button variant="outline" size="sm" className="border-silver/20 text-silver hover:bg-silver/10">
                 <FileText className="h-4 w-4 mr-2" />
                 Lab Values
+              </Button>
+              <Button variant="outline" size="sm" className="border-silver/20 text-silver hover:bg-silver/10">
+                <Maximize className="h-4 w-4 mr-2" />
+                Full Screen
+              </Button>
+              <Button variant="outline" size="sm" className="border-qred text-qred hover:bg-qred/10">
+                <X className="h-4 w-4 mr-2" />
+                End Exam
               </Button>
             </div>
           </div>
         </div>
         
-        <div className="mt-4">
-          <Progress value={progress} className="h-2" />
+        <div className="mt-4 flex items-center space-x-4">
+          <Progress value={progress} className="h-2 flex-1" />
+          <span className="text-sm text-silver min-w-fit">{Math.round(progress)}% complete</span>
         </div>
       </div>
 
-      <div className="flex flex-1">
+      <div className="flex h-full">
         {/* Question Navigation Sidebar */}
-        <div className="w-16 border-r border-silver/10 bg-black/40 p-2">
+        <div className="w-20 border-r border-silver/10 bg-black/40 p-3 overflow-y-auto">
           <div className="space-y-2">
             {mockQuestions.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentQuestion(index)}
-                className={`w-12 h-12 rounded flex items-center justify-center text-sm font-medium transition-colors relative ${
+                className={`w-14 h-14 rounded-lg flex items-center justify-center text-sm font-medium transition-all duration-200 relative ${
                   index === currentQuestion 
-                    ? "bg-qred text-white" 
+                    ? "bg-qred text-white shadow-lg" 
                     : selectedAnswers[index] !== undefined
-                    ? "bg-green-600 text-white"
+                    ? "bg-green-600 text-white hover:bg-green-700"
                     : "bg-silver/20 text-silver hover:bg-silver/30"
                 }`}
               >
@@ -150,57 +203,78 @@ const Exam = () => {
               </button>
             ))}
           </div>
+          
+          {/* Legend */}
+          <div className="mt-6 space-y-2 text-xs text-silver">
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 rounded bg-green-600"></div>
+              <span>Answered</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 rounded bg-qred"></div>
+              <span>Current</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 rounded bg-silver/20"></div>
+              <span>Unanswered</span>
+            </div>
+          </div>
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 p-6">
-          <div className="max-w-4xl mx-auto">
+        <div className="flex-1 p-8 overflow-y-auto">
+          <div className="max-w-5xl mx-auto">
             {/* Question Card */}
-            <Card className="mb-6">
-              <CardContent className="p-8 bg-white text-black">
-                <div className="flex items-start justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-black">Question {currentQuestion + 1}</h2>
+            <Card className="mb-8 shadow-xl">
+              <CardContent className="p-10 bg-white text-black">
+                <div className="flex items-start justify-between mb-6">
+                  <div className="flex items-center space-x-4">
+                    <h2 className="text-2xl font-bold text-black">Question {currentQuestion + 1}</h2>
+                    <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                      {mockQuestions.length} questions total
+                    </span>
+                  </div>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={toggleFlag}
                     className={`${
                       flaggedQuestions.has(currentQuestion)
-                        ? "bg-yellow-400 text-black border-yellow-400"
-                        : "border-gray-300 text-gray-600"
+                        ? "bg-yellow-400 text-black border-yellow-400 hover:bg-yellow-500"
+                        : "border-gray-300 text-gray-600 hover:bg-gray-50"
                     }`}
                   >
                     <Flag className="h-4 w-4 mr-2" />
-                    Flag
+                    {flaggedQuestions.has(currentQuestion) ? 'Flagged' : 'Flag'}
                   </Button>
                 </div>
                 
-                <div className="prose prose-lg max-w-none text-black">
-                  <p className="leading-relaxed">
+                <div className="prose prose-lg max-w-none text-black mb-8">
+                  <p className="leading-relaxed text-lg">
                     {mockQuestions[currentQuestion].text}
                   </p>
                 </div>
 
-                <div className="mt-8 space-y-3">
+                <div className="space-y-4">
                   {mockQuestions[currentQuestion].options.map((option, index) => (
                     <button
                       key={index}
                       onClick={() => handleAnswerSelect(index)}
-                      className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${
+                      className={`w-full text-left p-5 rounded-xl border-2 transition-all duration-200 ${
                         selectedAnswers[currentQuestion] === index
-                          ? "border-qred bg-qred/10 text-black"
-                          : "border-gray-200 hover:border-gray-300 bg-white text-black"
+                          ? "border-qred bg-qred/5 text-black shadow-md"
+                          : "border-gray-200 hover:border-gray-300 bg-white text-black hover:shadow-md"
                       }`}
                     >
-                      <div className="flex items-start space-x-3">
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
+                      <div className="flex items-start space-x-4">
+                        <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-bold ${
                           selectedAnswers[currentQuestion] === index
                             ? "border-qred bg-qred text-white"
                             : "border-gray-300 text-gray-600"
                         }`}>
                           {String.fromCharCode(65 + index)}
                         </div>
-                        <span className="flex-1">{option}</span>
+                        <span className="flex-1 text-lg leading-relaxed">{option}</span>
                       </div>
                     </button>
                   ))}
@@ -214,41 +288,42 @@ const Exam = () => {
                 variant="outline"
                 onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
                 disabled={currentQuestion === 0}
-                className="border-silver/20 text-silver"
+                className="border-silver/20 text-silver hover:bg-silver/10 disabled:opacity-50"
+                size="lg"
               >
-                <ChevronLeft className="h-4 w-4 mr-2" />
-                Previous
+                <ChevronLeft className="h-5 w-5 mr-2" />
+                Previous Question
               </Button>
 
-              <div className="flex items-center space-x-3">
-                <Button variant="outline" className="border-silver/20 text-silver">
-                  <Pause className="h-4 w-4 mr-2" />
-                  Pause
-                </Button>
-                <Button variant="outline" className="border-silver/20 text-silver">
+              <div className="flex items-center space-x-4">
+                <Button 
+                  variant="outline" 
+                  className="border-silver/20 text-silver hover:bg-silver/10"
+                  size="lg"
+                >
                   <SkipForward className="h-4 w-4 mr-2" />
-                  Skip
+                  Mark & Next
                 </Button>
               </div>
 
-              <Button
-                onClick={() => setCurrentQuestion(Math.min(mockQuestions.length - 1, currentQuestion + 1))}
-                disabled={currentQuestion === mockQuestions.length - 1}
-                className="bg-qred hover:bg-qred-light"
-              >
-                Next
-                <ChevronRight className="h-4 w-4 ml-2" />
-              </Button>
-            </div>
-
-            {/* Submit Button for Last Question */}
-            {currentQuestion === mockQuestions.length - 1 && (
-              <div className="mt-6 text-center">
-                <Button className="bg-green-600 hover:bg-green-700 px-8">
+              {currentQuestion === mockQuestions.length - 1 ? (
+                <Button
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                  size="lg"
+                >
                   Submit Exam
                 </Button>
-              </div>
-            )}
+              ) : (
+                <Button
+                  onClick={() => setCurrentQuestion(Math.min(mockQuestions.length - 1, currentQuestion + 1))}
+                  className="bg-qred hover:bg-qred/90 text-white"
+                  size="lg"
+                >
+                  Next Question
+                  <ChevronRight className="h-5 w-5 ml-2" />
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>
