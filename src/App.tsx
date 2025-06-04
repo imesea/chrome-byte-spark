@@ -11,6 +11,7 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import MyQbanks from "./pages/MyQbanks";
 import CreateQBank from "./pages/CreateQBank";
+import Exam from "./pages/Exam";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./layouts/AppLayout";
 
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/settings" element={<Settings />} />
             <Route path="/my-qbanks" element={<MyQbanks />} />
             <Route path="/create-qbank" element={<CreateQBank />} />
+            <Route path="/exam" element={<Exam />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
