@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -210,7 +211,7 @@ const Exam = () => {
               let buttonClass = "w-10 h-10 rounded-lg flex items-center justify-center text-xs font-medium transition-all duration-200 relative ";
               
               if (index === currentQuestion) {
-                buttonClass += "bg-qred text-white shadow-lg ring-1 ring-qred/50";
+                buttonClass += "bg-blue-500 text-white shadow-lg ring-1 ring-blue-500/50";
               } else {
                 switch (status) {
                   case 'correct':
@@ -271,7 +272,7 @@ const Exam = () => {
                   
                   {/* Question Text Container */}
                   <div className="mb-4 flex-1 overflow-y-auto">
-                    <div className="max-w-3xl">
+                    <div className="max-w-2xl">
                       <p className="text-black leading-relaxed text-sm">
                         {currentQuestionData.text}
                       </p>
@@ -279,10 +280,10 @@ const Exam = () => {
                   </div>
 
                   {/* Answer Options Container */}
-                  <div className="max-w-3xl">
+                  <div className="max-w-2xl">
                     <div className="space-y-2">
                       {currentQuestionData.options.map((option, index) => {
-                        let buttonClass = "w-full text-left p-3 rounded-xl border transition-all duration-200 text-sm";
+                        let buttonClass = "w-full text-left p-2.5 rounded-xl border transition-all duration-200 text-sm break-words";
                         
                         if (isCurrentQuestionSubmitted) {
                           if (index === currentQuestionData.correctAnswer) {
@@ -294,7 +295,7 @@ const Exam = () => {
                           }
                         } else {
                           if (selectedAnswer === index) {
-                            buttonClass += " border-qred bg-qred/5 text-black shadow-sm";
+                            buttonClass += " border-blue-500 bg-blue-50 text-black shadow-sm";
                           } else {
                             buttonClass += " border-gray-200 hover:border-gray-300 bg-white text-black hover:shadow-sm";
                           }
@@ -316,12 +317,12 @@ const Exam = () => {
                                     ? "border-red-500 bg-red-500 text-white"
                                     : "border-gray-300 text-gray-600"
                                   : selectedAnswer === index
-                                  ? "border-qred bg-qred text-white"
+                                  ? "border-blue-500 bg-blue-500 text-white"
                                   : "border-gray-300 text-gray-600"
                               }`}>
                                 {String.fromCharCode(65 + index)}
                               </div>
-                              <span className="flex-1 leading-relaxed text-left break-words">{option}</span>
+                              <span className="flex-1 leading-relaxed text-left">{option}</span>
                               {isCurrentQuestionSubmitted && index === currentQuestionData.correctAnswer && (
                                 <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
                               )}
