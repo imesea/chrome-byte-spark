@@ -152,7 +152,7 @@ const Exam = () => {
   return (
     <div className="h-screen bg-gradient-to-b from-[#111111] to-[#1a1a1a] text-white overflow-hidden flex flex-col">
       {/* Streamlined Header */}
-      <div className="border-b border-silver/10 bg-black/40 px-6 py-3 flex-shrink-0">
+      <div className="border-b border-silver/10 bg-black/40 px-6 py-2.5 flex-shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-6">
             <h1 className="text-lg font-semibold text-white">USMLE Step 1</h1>
@@ -177,25 +177,25 @@ const Exam = () => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="border-silver/20 text-silver hover:bg-silver/10 h-8 px-3 text-xs"
+                className="border-silver/20 text-silver hover:bg-silver/10 h-7 px-2 text-xs"
                 onClick={() => setIsPaused(!isPaused)}
               >
                 <Pause className="h-3 w-3 mr-1" />
                 {isPaused ? 'Resume' : 'Pause'}
               </Button>
-              <Button variant="outline" size="sm" className="border-silver/20 text-silver hover:bg-silver/10 h-8 px-3 text-xs">
+              <Button variant="outline" size="sm" className="border-silver/20 text-silver hover:bg-silver/10 h-7 px-2 text-xs">
                 <Calculator className="h-3 w-3 mr-1" />
                 Calculator
               </Button>
-              <Button variant="outline" size="sm" className="border-silver/20 text-silver hover:bg-silver/10 h-8 px-3 text-xs">
+              <Button variant="outline" size="sm" className="border-silver/20 text-silver hover:bg-silver/10 h-7 px-2 text-xs">
                 <FileText className="h-3 w-3 mr-1" />
                 Lab Values
               </Button>
-              <Button variant="outline" size="sm" className="border-silver/20 text-silver hover:bg-silver/10 h-8 px-3 text-xs">
+              <Button variant="outline" size="sm" className="border-silver/20 text-silver hover:bg-silver/10 h-7 px-2 text-xs">
                 <Maximize className="h-3 w-3 mr-1" />
                 Fullscreen
               </Button>
-              <Button variant="outline" size="sm" className="border-qred text-qred hover:bg-qred/10 h-8 px-3 text-xs">
+              <Button variant="outline" size="sm" className="border-qred text-qred hover:bg-qred/10 h-7 px-2 text-xs">
                 <X className="h-3 w-3 mr-1" />
                 End
               </Button>
@@ -203,7 +203,7 @@ const Exam = () => {
           </div>
         </div>
         
-        <div className="mt-3 flex items-center space-x-3">
+        <div className="mt-2 flex items-center space-x-3">
           <Progress value={progress} className="h-1.5 flex-1" />
           <span className="text-xs text-silver min-w-fit">{Math.round(progress)}%</span>
         </div>
@@ -300,77 +300,83 @@ const Exam = () => {
                     </Button>
                   </div>
                   
-                  <div className="prose prose-lg max-w-none text-black mb-6 flex-1">
-                    <p className="leading-relaxed">
-                      {currentQuestionData.text}
-                    </p>
-                  </div>
-
-                  <div className="space-y-3">
-                    {currentQuestionData.options.map((option, index) => {
-                      let buttonClass = "w-full text-left p-4 rounded-lg border-2 transition-all duration-200";
-                      
-                      if (isCurrentQuestionSubmitted) {
-                        if (index === currentQuestionData.correctAnswer) {
-                          buttonClass += " border-green-500 bg-green-50 text-black";
-                        } else if (index === selectedAnswer && index !== currentQuestionData.correctAnswer) {
-                          buttonClass += " border-red-500 bg-red-50 text-black";
-                        } else {
-                          buttonClass += " border-gray-200 bg-gray-50 text-gray-600";
-                        }
-                      } else {
-                        if (selectedAnswer === index) {
-                          buttonClass += " border-qred bg-qred/5 text-black shadow-md";
-                        } else {
-                          buttonClass += " border-gray-200 hover:border-gray-300 bg-white text-black hover:shadow-md";
-                        }
-                      }
-
-                      return (
-                        <button
-                          key={index}
-                          onClick={() => !isCurrentQuestionSubmitted && handleAnswerSelect(index)}
-                          disabled={isCurrentQuestionSubmitted}
-                          className={buttonClass}
-                        >
-                          <div className="flex items-start space-x-3">
-                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold ${
-                              isCurrentQuestionSubmitted 
-                                ? index === currentQuestionData.correctAnswer
-                                  ? "border-green-500 bg-green-500 text-white"
-                                  : index === selectedAnswer && index !== currentQuestionData.correctAnswer
-                                  ? "border-red-500 bg-red-500 text-white"
-                                  : "border-gray-300 text-gray-600"
-                                : selectedAnswer === index
-                                ? "border-qred bg-qred text-white"
-                                : "border-gray-300 text-gray-600"
-                            }`}>
-                              {String.fromCharCode(65 + index)}
-                            </div>
-                            <span className="flex-1 leading-relaxed">{option}</span>
-                            {isCurrentQuestionSubmitted && index === currentQuestionData.correctAnswer && (
-                              <CheckCircle className="h-5 w-5 text-green-500" />
-                            )}
-                            {isCurrentQuestionSubmitted && index === selectedAnswer && index !== currentQuestionData.correctAnswer && (
-                              <XCircle className="h-5 w-5 text-red-500" />
-                            )}
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {!isCurrentQuestionSubmitted && (
-                    <div className="mt-6 flex justify-center">
-                      <Button
-                        onClick={handleSubmitQuestion}
-                        disabled={selectedAnswer === undefined}
-                        className="bg-qred hover:bg-qred/90 text-white px-6 py-2"
-                      >
-                        Submit Answer
-                      </Button>
+                  {/* Constrained Question Text */}
+                  <div className="mb-6 flex-1">
+                    <div className="max-w-2xl">
+                      <p className="text-black leading-relaxed text-base">
+                        {currentQuestionData.text}
+                      </p>
                     </div>
-                  )}
+                  </div>
+
+                  {/* Constrained Answer Options */}
+                  <div className="max-w-2xl">
+                    <div className="space-y-3">
+                      {currentQuestionData.options.map((option, index) => {
+                        let buttonClass = "w-full text-left p-4 rounded-lg border-2 transition-all duration-200";
+                        
+                        if (isCurrentQuestionSubmitted) {
+                          if (index === currentQuestionData.correctAnswer) {
+                            buttonClass += " border-green-500 bg-green-50 text-black";
+                          } else if (index === selectedAnswer && index !== currentQuestionData.correctAnswer) {
+                            buttonClass += " border-red-500 bg-red-50 text-black";
+                          } else {
+                            buttonClass += " border-gray-200 bg-gray-50 text-gray-600";
+                          }
+                        } else {
+                          if (selectedAnswer === index) {
+                            buttonClass += " border-qred bg-qred/5 text-black shadow-md";
+                          } else {
+                            buttonClass += " border-gray-200 hover:border-gray-300 bg-white text-black hover:shadow-md";
+                          }
+                        }
+
+                        return (
+                          <button
+                            key={index}
+                            onClick={() => !isCurrentQuestionSubmitted && handleAnswerSelect(index)}
+                            disabled={isCurrentQuestionSubmitted}
+                            className={buttonClass}
+                          >
+                            <div className="flex items-start space-x-3">
+                              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold flex-shrink-0 ${
+                                isCurrentQuestionSubmitted 
+                                  ? index === currentQuestionData.correctAnswer
+                                    ? "border-green-500 bg-green-500 text-white"
+                                    : index === selectedAnswer && index !== currentQuestionData.correctAnswer
+                                    ? "border-red-500 bg-red-500 text-white"
+                                    : "border-gray-300 text-gray-600"
+                                  : selectedAnswer === index
+                                  ? "border-qred bg-qred text-white"
+                                  : "border-gray-300 text-gray-600"
+                              }`}>
+                                {String.fromCharCode(65 + index)}
+                              </div>
+                              <span className="flex-1 leading-relaxed text-left">{option}</span>
+                              {isCurrentQuestionSubmitted && index === currentQuestionData.correctAnswer && (
+                                <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
+                              )}
+                              {isCurrentQuestionSubmitted && index === selectedAnswer && index !== currentQuestionData.correctAnswer && (
+                                <XCircle className="h-5 w-5 text-red-500 flex-shrink-0" />
+                              )}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {!isCurrentQuestionSubmitted && (
+                      <div className="mt-6 flex justify-start">
+                        <Button
+                          onClick={handleSubmitQuestion}
+                          disabled={selectedAnswer === undefined}
+                          className="bg-qred hover:bg-qred/90 text-white px-6 py-2"
+                        >
+                          Submit Answer
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -456,7 +462,7 @@ const Exam = () => {
           </div>
 
           {/* Streamlined Bottom Panel */}
-          <div className="border-t border-silver/10 bg-black/40 p-3 flex-shrink-0">
+          <div className="border-t border-silver/10 bg-black/40 p-2.5 flex-shrink-0">
             <div className="flex items-center justify-between">
               {/* Navigation Controls */}
               <div className="flex items-center space-x-3">
