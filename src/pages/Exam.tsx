@@ -157,30 +157,7 @@ const Exam = () => {
       {/* Streamlined Header */}
       <div className="border-b border-silver/10 bg-black/40 px-4 py-2 flex-shrink-0">
         <div className="flex items-center justify-between">
-          {/* Moved Previous/Next buttons to the far left */}
-          <div className="flex items-center space-x-1">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
-              disabled={currentQuestion === 0}
-              className="border-silver/20 text-silver hover:bg-silver/10 disabled:opacity-50 h-8 px-3 text-sm"
-            >
-              <ChevronLeft className="h-4 w-4 mr-1" />
-              {/* Previous */}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentQuestion(Math.min(mockQuestions.length - 1, currentQuestion + 1))}
-              disabled={currentQuestion === mockQuestions.length - 1}
-              className="border-silver/20 text-silver hover:bg-silver/10 disabled:opacity-50 h-8 px-3 text-sm"
-            >
-              {/* Next */}
-              <ChevronRight className="h-4 w-4 ml-1" />
-            </Button>
-          </div>
-
+          {/* Title block - Now First Child */}
           <div className="flex items-center space-x-4">
             <h1 className="text-base font-semibold text-white">USMLE Step 1</h1>
             <div className="flex items-center space-x-3 text-silver text-xs">
@@ -192,8 +169,32 @@ const Exam = () => {
             </div>
           </div>
 
+          {/* Previous/Next buttons block - Now Second Child */}
+          <div className="flex items-center space-x-1">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
+              disabled={currentQuestion === 0}
+              className="border-silver/20 text-silver hover:bg-silver/10 disabled:opacity-50 h-6 px-4 text-xs"
+            >
+              <ChevronLeft className="h-3 w-3 mr-1" />
+              {/* Previous */}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentQuestion(Math.min(mockQuestions.length - 1, currentQuestion + 1))}
+              disabled={currentQuestion === mockQuestions.length - 1}
+              className="border-silver/20 text-silver hover:bg-silver/10 disabled:opacity-50 h-6 px-4 text-xs"
+            >
+              {/* Next */}
+              <ChevronRight className="h-3 w-3 ml-1" />
+            </Button>
+          </div>
+
+          {/* Other controls block - Now Third Child */}
           <div className="flex items-center space-x-2">
-            {/* Clock and other controls remain here */}
             <div className="flex items-center space-x-1 text-silver text-xs">
               <Clock className="h-3 w-3" />
               <span className={`font-mono ${timeRemaining < 600 ? 'text-qred' : ''}`}>
