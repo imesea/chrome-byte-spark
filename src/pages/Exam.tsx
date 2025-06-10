@@ -157,7 +157,7 @@ const Exam = () => {
       {/* Streamlined Header */}
       <div className="border-b border-silver/10 bg-black/40 px-4 py-2 flex-shrink-0">
         <div className="flex items-center justify-between">
-          {/* Title block - Now First Child */}
+          {/* Title block with integrated Previous/Next buttons */}
           <div className="flex items-center space-x-4">
             <h1 className="text-base font-semibold text-white">USMLE Step 1</h1>
             <div className="flex items-center space-x-3 text-silver text-xs">
@@ -167,33 +167,31 @@ const Exam = () => {
               </div>
               <span className="bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded text-xs">Tutor</span>
             </div>
-          </div>
-
-          {/* Previous/Next buttons block - Now Second Child */}
-          <div className="flex items-center space-x-1">
+            {/* Previous button integrated here */}
             <Button
               variant="outline"
               size="sm"
               onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
               disabled={currentQuestion === 0}
-              className="border-silver/20 text-silver hover:bg-silver/10 disabled:opacity-50 h-6 px-4 text-xs"
+              className="border-silver/20 text-silver hover:bg-silver/10 disabled:opacity-50 h-6 px-8 text-xs ml-3" // ml-3 added
             >
               <ChevronLeft className="h-3 w-3 mr-1" />
               {/* Previous */}
             </Button>
+            {/* Next button integrated here */}
             <Button
               variant="outline"
               size="sm"
               onClick={() => setCurrentQuestion(Math.min(mockQuestions.length - 1, currentQuestion + 1))}
               disabled={currentQuestion === mockQuestions.length - 1}
-              className="border-silver/20 text-silver hover:bg-silver/10 disabled:opacity-50 h-6 px-4 text-xs"
+              className="border-silver/20 text-silver hover:bg-silver/10 disabled:opacity-50 h-6 px-8 text-xs ml-1" // ml-1 added
             >
               {/* Next */}
               <ChevronRight className="h-3 w-3 ml-1" />
             </Button>
           </div>
 
-          {/* Other controls block - Now Third Child */}
+          {/* Other controls block - Now effectively Second Child of main flex, as Prev/Next are inside titleDiv */}
           <div className="flex items-center space-x-2">
             <div className="flex items-center space-x-1 text-silver text-xs">
               <Clock className="h-3 w-3" />
