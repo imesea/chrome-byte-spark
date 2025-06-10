@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 interface HeroProps {
   onGetStarted?: () => void;
@@ -40,6 +41,14 @@ const Hero = ({ onGetStarted }: HeroProps) => {
               <Button variant="outline" className="border-silver/30 text-silver hover:text-white hover:border-silver px-8 py-6 text-lg">
                 Watch demo
               </Button>
+              <Link to="/exam">
+                <Button
+                  variant="outline"
+                  className="border-blue-500 text-blue-500 hover:text-white hover:bg-blue-500 hover:border-blue-500 px-8 py-6 text-lg"
+                >
+                  Start Exam Practice
+                </Button>
+              </Link>
             </div>
             
             <div className="pt-6 flex items-center gap-4">
