@@ -18,7 +18,9 @@ import {
   XCircle,
   Lightbulb,
   Target,
-  TrendingUp
+  TrendingUp,
+  ClipboardSignature,
+  Layers
 } from "lucide-react";
 
 const mockQuestions = [
@@ -167,6 +169,28 @@ const Exam = () => {
           </div>
           
           <div className="flex items-center space-x-2">
+            {/* Moved Navigation Controls */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
+              disabled={currentQuestion === 0}
+              className="border-silver/20 text-silver hover:bg-silver/10 disabled:opacity-50 h-6 px-2 text-xs"
+            >
+              <ChevronLeft className="h-3 w-3 mr-1" />
+              {/* Previous */}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentQuestion(Math.min(mockQuestions.length - 1, currentQuestion + 1))}
+              disabled={currentQuestion === mockQuestions.length - 1}
+              className="border-silver/20 text-silver hover:bg-silver/10 disabled:opacity-50 h-6 px-2 text-xs"
+            >
+              {/* Next */}
+              <ChevronRight className="h-3 w-3 ml-1" />
+            </Button>
+
             <div className="flex items-center space-x-1 text-silver text-xs">
               <Clock className="h-3 w-3" />
               <span className={`font-mono ${timeRemaining < 600 ? 'text-qred' : ''}`}>
@@ -185,6 +209,14 @@ const Exam = () => {
               </Button>
               <Button variant="outline" size="sm" className="border-silver/20 text-silver hover:bg-silver/10 h-6 px-2 text-xs">
                 <Calculator className="h-2.5 w-2.5" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-silver/20 text-silver hover:bg-silver/10 h-6 px-2 text-xs"
+                aria-label="Lab Values"
+              >
+                <FileText className="h-2.5 w-2.5" />
               </Button>
               <Button variant="outline" size="sm" className="border-silver/20 text-silver hover:bg-silver/10 h-6 px-2 text-xs">
                 <Maximize className="h-2.5 w-2.5" />
@@ -434,25 +466,21 @@ const Exam = () => {
           {/* Streamlined Bottom Panel */}
           <div className="border-t border-silver/10 bg-black/40 p-2 flex-shrink-0">
             <div className="flex items-center justify-between">
-              {/* Navigation Controls */}
+              {/* New Notebook and Flashcards Buttons */}
               <div className="flex items-center space-x-2">
                 <Button
                   variant="outline"
-                  onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
-                  disabled={currentQuestion === 0}
                   className="border-silver/20 text-silver hover:bg-silver/10 disabled:opacity-50 h-7 px-3 text-xs"
                 >
-                  <ChevronLeft className="h-3 w-3 mr-1" />
-                  Previous
+                  <ClipboardSignature className="h-3 w-3 mr-1" />
+                  Notebook
                 </Button>
-
                 <Button
-                  onClick={() => setCurrentQuestion(Math.min(mockQuestions.length - 1, currentQuestion + 1))}
-                  disabled={currentQuestion === mockQuestions.length - 1}
-                  className="bg-qred hover:bg-qred/90 text-white disabled:opacity-50 h-7 px-3 text-xs"
+                  variant="outline"
+                  className="border-silver/20 text-silver hover:bg-silver/10 disabled:opacity-50 h-7 px-3 text-xs"
                 >
-                  Next
-                  <ChevronRight className="h-3 w-3 ml-1" />
+                  <Layers className="h-3 w-3 mr-1" />
+                  Flashcards
                 </Button>
               </div>
 
@@ -463,6 +491,7 @@ const Exam = () => {
 
               {/* Action Buttons */}
               <div className="flex items-center space-x-2">
+                {/* This div is kept to ensure Finish Session button remains if needed and layout doesn't break */}
                 {currentQuestion === mockQuestions.length - 1 ? (
                   <Button
                     className="bg-green-600 hover:bg-green-700 text-white h-7 px-3 text-xs"
